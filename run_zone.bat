@@ -1,4 +1,4 @@
 IF EXIST GAME_PACKETS rmdir /S /Q GAME_PACKETS
-pushd H1Z1-ZoneServer
+pushd zone_binaries
 start zoneServer.exe
 popd

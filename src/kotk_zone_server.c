@@ -257,6 +257,12 @@ __declspec(dllexport) AppTick(serverTick) {
                         &app->streamFunctionTable->gameInputData;
                     app->sessions[firstFreeSession].outputStream.dataCallbackPtr =
                         &app->streamFunctionTable->gameOutputData;
+
+                    if (app->sessions[firstFreeSession].inputPool.sequenceBase >= MAX_FRAGMENTS
+                        && app->sessions[firstFreeSession].outputPool.sequenceBase >= MAX_FRAGMENTS) {
+                        FragmentAdvance(&app->sessions[firstFreeSession].inputPool);
+                        FragmentAdvance(&app->sessions[firstFreeSession].outputPool);
+                    }
                 }
             }
         }

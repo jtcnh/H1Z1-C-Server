@@ -1,4 +1,4 @@
 IF EXIST LOGIN_PACKETS rmdir /S /Q LOGIN_PACKETS
-pushd H1Z1-LoginServer
+pushd login_binaries
 start loginServer.exe
 popd

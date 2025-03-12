@@ -39,7 +39,7 @@ typedef double f64;
 #define local_persist static
 #define global static
 
-#define KB(n) ((n)*1024)
+#define KB(n) ((n) * 1024)
 #define MB(n) (KB(n) * 1024)
 
 #define MIN(a, b) (a < b ? a : b)
@@ -127,7 +127,7 @@ STATIC_ASSERT(SIZE_OF(isize) == 4 || SIZE_OF(isize) == 8);
 
 typedef struct Buffer Buffer;
 struct Buffer {
-    isize size;
+    uptr size;
     u8* data;
 };
 

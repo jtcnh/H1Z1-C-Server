@@ -42,7 +42,7 @@ void LoginPacketHandler(AppState* app, SessionState* session, u8* data, u32 data
 
             // Send the edited raw data, captured from Z1BR to work with KotK and JS
             LoginPacketRawFileSend(app, session, &app->arenaPerTick, KB(20),
-                                   "../src/login/loginReply.bin");
+                                   "..\\src\\login\\loginReply.bin");
         } break;
         case LOGIN_LOGOUT_ID: {
             kind = Login_Packet_Kind_Logout;

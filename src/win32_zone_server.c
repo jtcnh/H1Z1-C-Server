@@ -82,7 +82,7 @@ int main() {
     QueryPerformanceFrequency(&performanceFrequency);
 
     b32 isSleepGranualor = timeBeginPeriod(1) == TIMERR_NOERROR;
-    f32 tickRate = 30.f;
+    f32 tickRate = 45.f;
 
     f32 secondsPerTick = 1.0f / tickRate;
     AppCode appCode = AppCodeLoad();

@@ -15,7 +15,7 @@
 #include "yote_platform.h"
 #include "game_server.h"
 
-#define LOCAL_PORT 1115
+#define LOCAL_PORT 20042
 #define MAX_FRAGMENTS 12000
 #define MAX_PACKET_LENGTH 512
 #define DATA_HEADER_LENGTH 4
@@ -234,6 +234,12 @@ __declspec(dllexport) AppTick(serverTick) {
                         &app->streamFunctionTable->gameInputData;
                     app->sessions[firstFreeSession].outputStream.dataCallbackPtr =
                         &app->streamFunctionTable->gameOutputData;
+
+                    if (app->sessions[firstFreeSession].inputPool.sequenceBase >= MAX_FRAGMENTS
+                        && app->sessions[firstFreeSession].outputPool.sequenceBase >= MAX_FRAGMENTS) {
+                        FragmentAdvance(&app->sessions[firstFreeSession].inputPool);
+                        FragmentAdvance(&app->sessions[firstFreeSession].outputPool);
+                    }
                 }
             }
         }

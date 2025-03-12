@@ -1,11 +1,11 @@
 # Specify filepatterns you want git to ignore.
 _IGNORE_*
 GAME_PACKETS/
-H1Z1-LoginServer/loginModuleTemp.dll
-H1Z1-ZoneServer/zoneModuleTemp.dll
+login_binaries/loginModuleTemp.dll
+schema/output
+zone_binaries/zoneModuleTemp.dll
 LOGIN_PACKETS/
 *.bkp
 zig/*
 patch/H1Emu-Kotk-Patch
 src/cTesting/*
-src/zone/5.bin

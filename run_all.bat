@@ -1,10 +1,10 @@
 @echo off
-pushd H1Z1-LoginServer
+pushd login_binaries
 IF EXIST packets rmdir /S /Q packets
 start loginServer.exe
 popd
 
-pushd H1Z1-ZoneServer
+pushd zone_binaries
 IF EXIST packets rmdir /S /Q packets
 start zoneServer.exe
 popd

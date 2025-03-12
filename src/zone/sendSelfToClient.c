@@ -118,6 +118,7 @@ u32 getResourceType(u32 resourceId) {
 void SendSelfToClient(AppState* app, SessionState* session) {
     Zone_Packet_SendSelfToClient sendSelf = { 0 };
 
+    /*
     sendSelf.payload_self = (struct payload_self_s[1]){
         [0] = {
             .character_id = session->characterId,
@@ -162,7 +163,8 @@ void SendSelfToClient(AppState* app, SessionState* session) {
 
     ZonePacketSend(app, session, &app->arenaPerTick, KB(50), Zone_Packet_Kind_SendSelfToClient,
                    &sendSelf);
+    */
 
-    // ZonePacketRawFileSend(app, session, &app->arenaPerTick, KB(40),
-    // "H:\\H1Z1-KotK-C\\H1Z1-C-Server\\src\\zone\\5.bin");
+    // sending the raw packet for now
+    ZonePacketRawFileSend(app, session, &app->arenaPerTick, KB(40), "..\\src\\zone\\send_self.bin");
 }
