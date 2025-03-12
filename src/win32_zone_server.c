@@ -37,7 +37,7 @@ AppCode AppCodeLoad() {
     AppCode result = { 0 };
 
     result.lastWriteTime = GetLastWriteTime(ModuleFile);
-    CopyFileA(ModuleFile, ModuleFileTemp, false);
+    CopyFileA(ModuleFile, ModuleFileTemp, FALSE);
 
     result.hModule = LoadLibraryA(ModuleFileTemp);
     if (result.hModule) {
@@ -58,7 +58,7 @@ void AppCodeUnload(AppCode* AppCode) {
         AppCode->hModule = 0;
     }
 
-    AppCode->isValid = false;
+    AppCode->isValid = FALSE;
     AppCode->tickFunc = appTickStub;
 }
 
@@ -88,7 +88,7 @@ int main() {
     AppCode appCode = AppCodeLoad();
 
     u64 previousCounter = platform_win_wall_clock();
-    b32 isRunning = true;
+    b32 isRunning = TRUE;
 
     while (isRunning) {
         appCode.tickFunc(&appMemory);

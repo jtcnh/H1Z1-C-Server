@@ -1,52 +1,13 @@
-DWORD WINAPI ZonePacketSendThread(LPVOID lpParam) {
-    ThreadParams* params = lpParam;
-
-    AppState* app = params->app;
-    SessionState* session = params->session;
-    Arena* arena = params->arena;
-    u32 maxLen = params->maxLen;
-    Zone_Packet_Kind kind = params->kind;
-    void* packetPtr = params->packetPtr;
-
-    u8* baseBuffer = arena_push_size(arena, maxLen);
+void ZonePacketSend(AppState* app, SessionState* session, Arena* arena, Zone_Packet_Kind kind,
+                    void* packetPtr) {
+    u8* baseBuffer = arena_push_size(arena, MAX_PACKET_LENGTH);
     u8* packedBuffer = baseBuffer + TunnelDataHeaderLen;
 
     u32 packedLen = zone_packet_pack(kind, packetPtr, packedBuffer);
     u32 totalLen = packedLen + TunnelDataHeaderLen;
 
-    arena_rewind(arena, maxLen - totalLen);
+    // arena_rewind(arena, maxLen - totalLen);
     GatewayTunnelDataSend(app, session, baseBuffer, totalLen);
-
-    return 0;
-}
-
-void ZonePacketSend(AppState* app, SessionState* session, Arena* arena, u32 maxLen,
-                    Zone_Packet_Kind kind, void* packetPtr) {
-    ThreadParams params;
-
-    params.app = app;
-    params.session = session;
-    params.arena = arena;
-    params.maxLen = maxLen;
-    params.kind = kind;
-    params.packetPtr = packetPtr;
-
-    HANDLE threadHandles[MAX_THREADS];
-    threadHandles[0] = CreateThread(NULL, 0, ZonePacketSendThread, &params, 0, NULL);
-
-    if (threadHandles[0] == NULL) {
-        ABORT_MSG("Thread failed to create!\n");
-    }
-
-    DWORD result = WaitForMultipleObjects(1, threadHandles, TRUE, INFINITE);
-
-    if (result == WAIT_FAILED) {
-        ABORT_MSG("Wait for threads failed!\n");
-    }
-
-    for (u32 i = 0; i < 1; i++) {
-        CloseHandle(threadHandles[i]);
-    }
 }
 
 void ZonePacketRawFileSend(AppState* app, SessionState* session, Arena* arena, u32 maxLen, char* path) {
@@ -173,8 +134,7 @@ void readPositionUpdateData(AppState* app, SessionState* session, u8* data, u32 
         offset += v.length;
     }
 
-    ZonePacketSend(app, session, &app->arenaPerTick, KB(10), Zone_Packet_Kind_PlayerUpdatePosition,
-                   &obj);
+    ZonePacketSend(app, session, &app->arenaPerTick, Zone_Packet_Kind_PlayerUpdatePosition, &obj);
 }
 
 b32 IsValid(BaseItem* baseItem, u8 flag) {
@@ -185,10 +145,10 @@ b32 IsValid(BaseItem* baseItem, u8 flag) {
     if (baseItem->stackCount <= 0) {
         fprintf(stderr, "Item is invalid; itemDefId: (%u), stackCount: (%u), debugFlag: (%u)\n",
                 baseItem->itemDefId, baseItem->stackCount, baseItem->debugFlag);
-        return false;
+        return FALSE;
     }
 
-    return true;
+    return TRUE;
 }
 
 ItemDefinition GetItemDefinition(ItemDefinition* itemDef, u32 itemDefId) {
@@ -200,18 +160,18 @@ b32 IsWeapon(ItemDefinition* itemDef, u32 itemDefId) {
         return itemDef[itemDefId].itemType == 20;
     }
 
-    return false;
+    return FALSE;
 }
 
 b32 IsArmor(ItemDefinition* itemDef, u32 itemDefId) {
     if (itemDefId != 0) {
         if (itemDef[itemDefId].descriptionId == 12073 || itemDef[itemDefId].descriptionId == 11151
             || itemDef[itemDefId].descriptionId == 11153) {
-            return true;
+            return TRUE;
         }
     }
 
-    return false;
+    return FALSE;
 }
 
 b32 IsHelmet(ItemDefinition* itemDef, u32 itemDefId) {
@@ -220,17 +180,17 @@ b32 IsHelmet(ItemDefinition* itemDef, u32 itemDefId) {
 
         if (itemDef[itemDefId].descriptionId == 9945 || itemDef[itemDefId].descriptionId == 12994
             || itemDef[itemDefId].descriptionId == 9114 || itemDef[itemDefId].descriptionId == 9945) {
-            return true;
+            return TRUE;
         }
     }
 
-    return false;
+    return FALSE;
 }
 
 ItemData GetItemData(ItemData* itemData, ItemDefinition* itemDef, u32 itemDefId) {
     u32 durability = 0;
 
-    while (true) {
+    while (TRUE) {
         if (IsWeapon(itemDef, itemDef->baseItem[itemDefId].itemDefId)) {
             durability = 2000;
             break;
@@ -248,7 +208,7 @@ ItemData GetItemData(ItemData* itemData, ItemDefinition* itemDef, u32 itemDefId)
     itemData->guid = itemDef->baseItem[itemDefId].itemGuid;
     itemData->count = itemDef->baseItem[itemDefId].stackCount;
 
-    itemData->itemSubData->hasSubData = false;
+    itemData->itemSubData->hasSubData = FALSE;
 
     itemData->containerGuid = itemDef->baseItem[itemDefId].containerGuid;
     itemData->containerDefinitionId = itemDef->baseItem[itemDefId].containerDefId;
@@ -256,7 +216,7 @@ ItemData GetItemData(ItemData* itemData, ItemDefinition* itemDef, u32 itemDefId)
     itemData->baseDurability = durability;
     itemData->currentDurability = durability ? itemDef->baseItem[itemDefId].currentDurability : 0;
     itemData->maxDurabilityFromDefinition = durability;
-    itemData->unknownBoolean1 = true;
+    itemData->unknownBoolean1 = TRUE;
     itemData->ownerCharacterId = 0x0000000000000001ull;
     itemData->unknownDword9 = 1;
     /* Initialize weaponData here */
@@ -274,8 +234,7 @@ void WallOfDataBase(AppState* app, SessionState* session, u8* data, u32 dataLen)
             zone_packet_unpack(data + offset, dataLen - offset, Zone_Packet_Kind_WallOfData_UIEvent,
                                &uiEvent, &app->arenaPerTick);
 
-            ZonePacketSend(app, session, &app->arenaPerTick, KB(10),
-                           Zone_Packet_Kind_WallOfData_UIEvent, 0);
+            ZonePacketSend(app, session, &app->arenaPerTick, Zone_Packet_Kind_WallOfData_UIEvent, 0);
         } break;
         case 6: {
             Zone_Packet_WallOfData_ClientSystemInfo systemInfo = { 0 };
@@ -283,7 +242,7 @@ void WallOfDataBase(AppState* app, SessionState* session, u8* data, u32 dataLen)
                                Zone_Packet_Kind_WallOfData_ClientSystemInfo, &systemInfo,
                                &app->arenaPerTick);
 
-            ZonePacketSend(app, session, &app->arenaPerTick, KB(10),
+            ZonePacketSend(app, session, &app->arenaPerTick,
                            Zone_Packet_Kind_WallOfData_ClientSystemInfo, &systemInfo);
         } break;
         case 0xc: {
@@ -292,7 +251,7 @@ void WallOfDataBase(AppState* app, SessionState* session, u8* data, u32 dataLen)
                                Zone_Packet_Kind_WallOfData_ClientTransition, &clientTransition,
                                &app->arenaPerTick);
 
-            ZonePacketSend(app, session, &app->arenaPerTick, KB(10),
+            ZonePacketSend(app, session, &app->arenaPerTick,
                            Zone_Packet_Kind_WallOfData_ClientTransition, &clientTransition);
         } break;
     }
@@ -303,7 +262,7 @@ void LobbyGameDefinitionsBase(AppState* app, SessionState* session, u8* data, u3
 
     switch (subPacketId) {
         case 1: {
-            ZonePacketSend(app, session, &app->arenaPerTick, KB(10),
+            ZonePacketSend(app, session, &app->arenaPerTick,
                            Zone_Packet_Kind_LobbyGameDefinition_DefinitionsResponse, 0);
         } break;
         default: {
@@ -322,12 +281,12 @@ void StaticViewBase(AppState* app, SessionState* session, u8* data, u32 dataLen)
         Zone_Packet_ClientUpdate_UpdateLocation updateLoc = {
             .position = { .x = -32.26f, .y = 506.41f, .z = 280.21f, .w = 1.f },
             .rotation = { .x = -0.11f, .y = -0.58f, .z = -0.08f, .w = 1.f },
-            .trigger_loading_screen = true,
+            .trigger_loading_screen = TRUE,
             .unk_u8_1 = 0,
-            .unk_bool = false,
+            .unk_bool = FALSE,
         };
-        ZonePacketSend(app, session, &app->arenaPerTick, KB(10),
-                       Zone_Packet_Kind_ClientUpdate_UpdateLocation, &updateLoc);
+        ZonePacketSend(app, session, &app->arenaPerTick, Zone_Packet_Kind_ClientUpdate_UpdateLocation,
+                       &updateLoc);
 
         Zone_Packet_StaticViewReply reply = {
             .state = 0,
@@ -335,9 +294,8 @@ void StaticViewBase(AppState* app, SessionState* session, u8* data, u32 dataLen)
             .rotation = { .x = 199.99f, .y = 289.99999f, .z = 370.17f, .w = 6.79f },
             .lookAt = { .x = 69.81f, .y = 56.f, .z = 0.f, .w = 0.f },
             .unk_byte_1 = 255,
-            .enabled = true,
+            .enabled = TRUE,
         };
-        ZonePacketSend(app, session, &app->arenaPerTick, KB(10), Zone_Packet_Kind_StaticViewReply,
-                       &reply);
+        ZonePacketSend(app, session, &app->arenaPerTick, Zone_Packet_Kind_StaticViewReply, &reply);
     }
 }

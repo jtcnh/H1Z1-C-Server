@@ -7,9 +7,9 @@
 #include <string.h>
 #include <time.h>
 
-#define YOTE_USE_ARENA            // Use memory arena
-#define YOTE_USE_STRING           // Use strings
-#define YOTE_PLATFORM_USE_SOCKETS // Use sockets for server
+#define YOTE_USE_ARENA 1            // Use memory arena
+#define YOTE_USE_STRING 1           // Use strings
+#define YOTE_PLATFORM_USE_SOCKETS 1 // Use sockets for server
 
 #include "yote.h"
 #include "yote_platform.h"
@@ -148,11 +148,11 @@ __declspec(dllexport) AppTick(serverTick) {
             util_base64_decode(rc4KeyEncoded, sizeof(rc4KeyEncoded) - 1, app->rc4Decoded);
 
         app->args.udpLen = MAX_PACKET_LENGTH;
-        app->args.dumpCore = true;
-        app->args.dumpLogin = true;
-        app->args.dumpTunnel = true;
-        app->args.dumpGateway = true;
-        app->args.dumpZone = true;
+        app->args.dumpCore = TRUE;
+        app->args.dumpLogin = TRUE;
+        app->args.dumpTunnel = TRUE;
+        app->args.dumpGateway = TRUE;
+        app->args.dumpZone = TRUE;
 
         app->sessionCapacity = MAX_SESSIONS_COUNT;
         app->socket = app->api->socket_udp_create_and_bind(LOCAL_PORT);
@@ -223,10 +223,10 @@ __declspec(dllexport) AppTick(serverTick) {
 
                     app->sessions[firstFreeSession].inputStream =
                         InputStreamInit(&app->sessions[firstFreeSession].inputPool, app->rc4Decoded,
-                                        app->rc4DecodedLen, false);
+                                        app->rc4DecodedLen, FALSE);
                     app->sessions[firstFreeSession].outputStream =
                         OutputStreamInit(&app->sessions[firstFreeSession].outputPool, app->rc4Decoded,
-                                         app->rc4DecodedLen, false);
+                                         app->rc4DecodedLen, FALSE);
 
                     app->sessions[firstFreeSession].inputStream.ackCallbackPtr =
                         &app->streamFunctionTable->gameInputAck;
@@ -246,7 +246,7 @@ __declspec(dllexport) AppTick(serverTick) {
 
         if (knownSession != -1) {
             CorePacketHandle(app, &app->sessions[knownSession], app->api, incomingBuffer, receiveResult,
-                             false);
+                             FALSE);
 
             if (app->sessions[knownSession].previousAck != app->sessions[knownSession].nextAck) {
                 printf(MESSAGE_CONCAT_INFO("Syncing ack...\n"));

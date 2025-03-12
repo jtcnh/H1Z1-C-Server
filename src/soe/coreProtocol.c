@@ -224,16 +224,16 @@ void CorePacketSend(PlatformSocket socket, PlatformApi* api, u32 ip, u16 port, C
 
     switch (kind) {
         case CoreKindSessionReply: {
-            packedLen = CorePacketPack(kind, packetPtr, buffer, false, args);
+            packedLen = CorePacketPack(kind, packetPtr, buffer, FALSE, args);
         } break;
         case CoreKindData: {
-            packedLen = CorePacketPack(kind, packetPtr, buffer, false, args);
+            packedLen = CorePacketPack(kind, packetPtr, buffer, FALSE, args);
         } break;
         case CoreKindDataFragment: {
-            packedLen = CorePacketPack(kind, packetPtr, buffer, false, args);
+            packedLen = CorePacketPack(kind, packetPtr, buffer, FALSE, args);
         } break;
         case CoreKindAck: {
-            packedLen = CorePacketPack(kind, packetPtr, buffer, false, args);
+            packedLen = CorePacketPack(kind, packetPtr, buffer, FALSE, args);
         } break;
         default: {
             ABORT_MSG("Unable to send unhandled packet!\n");
@@ -310,8 +310,8 @@ void CorePacketHandle(AppState* app, SessionState* session, PlatformApi* api, u8
             if (strcmp(packet.protocolName, "LoginUdp_11") == 0) {
                 printf("[*] Enabling encryption for session\n");
 
-                session->inputStream.useEncryption = true;
-                session->outputStream.useEncryption = true;
+                session->inputStream.useEncryption = TRUE;
+                session->outputStream.useEncryption = TRUE;
             }
 
             CorePacketSend(app->socket, api, session->address.ip, session->address.port, &session->args,
@@ -339,7 +339,7 @@ void CorePacketHandle(AppState* app, SessionState* session, PlatformApi* api, u8
                 u32 chunkLen;
                 offset += InputStreamReadLen((u8*)((uptr)data + offset), &chunkLen);
 
-                CorePacketHandle(app, session, api, data + offset, chunkLen, true);
+                CorePacketHandle(app, session, api, data + offset, chunkLen, TRUE);
                 offset += chunkLen;
             }
         } break;
@@ -351,7 +351,7 @@ void CorePacketHandle(AppState* app, SessionState* session, PlatformApi* api, u8
             CorePacketUnpack(data, dataLen, kind, &packet, isSubPacket, &session->args);
 
             InputStreamWrite(app, session, &session->inputStream, packet.data, packet.dataLen,
-                             packet.sequence, false);
+                             packet.sequence, FALSE);
         } break;
         case CoreDataFragmentId: {
             kind = CoreKindDataFragment;
@@ -361,7 +361,7 @@ void CorePacketHandle(AppState* app, SessionState* session, PlatformApi* api, u8
             CorePacketUnpack(data, dataLen, kind, &packet, isSubPacket, &session->args);
 
             InputStreamWrite(app, session, &session->inputStream, packet.data, packet.dataLen,
-                             packet.sequence, true);
+                             packet.sequence, TRUE);
         } break;
         case CoreAckId: {
             kind = CoreKindAck;

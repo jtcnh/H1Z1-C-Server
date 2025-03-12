@@ -1,12 +1,3 @@
-typedef struct ThreadParams {
-    AppState* app;
-    SessionState* session;
-    Arena* arena;
-    u32 maxLen;
-    Zone_Packet_Kind kind;
-    void* packetPtr;
-} ThreadParams;
-
 typedef struct BaseItem {
     u32 itemDefId;
     u32 slotId;

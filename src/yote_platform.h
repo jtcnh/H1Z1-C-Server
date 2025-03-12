@@ -69,11 +69,11 @@ PLATFORM_FOLDER_CREATE(platform_win_folder_create) {
         DWORD last_error = GetLastError();
         if (last_error != ERROR_ALREADY_EXISTS) {
             printf("[!] CreateDirectory error on \"%s\" - Error: %lu\n", folder_path, last_error);
-            return false;
+            return FALSE;
         }
     }
 
-    return true;
+    return TRUE;
 }
 
 PLATFORM_BUFFER_WRITE_TO_FILE(platform_win_buffer_write_to_file) {
@@ -163,10 +163,10 @@ b32 platform_win_wsa_initialize() {
     int error = WSAStartup(MAKEWORD(2, 2), &wsa_data);
     if (error) {
         printf("[!] WSAStartup failed - Error: %d\n", error);
-        return false;
+        return FALSE;
     }
 
-    return true;
+    return TRUE;
 }
 
 PLATFORM_SOCKET_UDP_CREATE_AND_BIND(platform_win_socket_udp_create_and_bind) {
@@ -183,7 +183,7 @@ PLATFORM_SOCKET_UDP_CREATE_AND_BIND(platform_win_socket_udp_create_and_bind) {
         return result;
     }
 
-    u_long cmd_arg = true;
+    u_long cmd_arg = TRUE;
     if (ioctlsocket(result.socket, FIONBIO, &cmd_arg) == SOCKET_ERROR) {
         printf("[!] ioctlsocket() failed: %d\n", WSAGetLastError());
         goto socket_close;
@@ -201,7 +201,7 @@ PLATFORM_SOCKET_UDP_CREATE_AND_BIND(platform_win_socket_udp_create_and_bind) {
         goto socket_close;
     }
 
-    result.is_valid = true;
+    result.is_valid = TRUE;
     return result;
 
 socket_close:

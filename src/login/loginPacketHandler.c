@@ -64,7 +64,7 @@ void LoginPacketHandler(AppState* app, SessionState* session, u8* data, u32 data
                 {
                     .id = 1,
                     .state = 2,
-                    .is_locked = false,
+                    .is_locked = FALSE,
                     .name = "H1Z1-C-Server",
                     .name_length = STRLEN("H1Z1-C-Server"),
                     .name_id = 193,
@@ -82,16 +82,17 @@ void LoginPacketHandler(AppState* app, SessionState* session, u8* data, u32 data
                                "Subregion=\"UI.SubregionUS\" IsRecommended=\"1\" IsRecommendedVS=\"0\" "
                                "IsRecommendedNC=\"0\" IsRecommendedTR=\"0\" />"),
                     .population_data =
-                        "<Population PctCap=\"0\" PingAdr=\"127.0.0.1:1117\" Rulesets=\"\" Mode=\"13\" "
+                        "<Population PctCap=\"0\" PingAdr=\"127.0.0.1:60000\" Rulesets=\"\" "
+                        "Mode=\"13\" "
                         "IsLogin=\"1\" IsWL=\"0\" IsEvt=\"0\" PL=\"0\" DC=\"LVS\" PopLock=\"0\" "
                         "GP=\"100\" BP=\"175\" MaxPop=\"4000\" Subregion=\"US\"><Fac "
                         "IsList=\"1\"/></Population>",
                     .population_data_length =
-                        STRLEN("<Population PctCap=\"0\" PingAdr=\"127.0.0.1:1117\" Rulesets=\"\" "
+                        STRLEN("<Population PctCap=\"0\" PingAdr=\"127.0.0.1:60000\" Rulesets=\"\" "
                                "Mode=\"13\" IsLogin=\"1\" IsWL=\"0\" IsEvt=\"0\" PL=\"0\" DC=\"LVS\" "
                                "PopLock=\"0\" GP=\"100\" BP=\"175\" MaxPop=\"4000\" "
                                "Subregion=\"US\"><Fac IsList=\"1\"/></Population>"),
-                    .is_access_allowed = true,
+                    .is_access_allowed = TRUE,
                 },
             };
 
@@ -147,8 +148,8 @@ void LoginPacketHandler(AppState* app, SessionState* session, u8* data, u32 data
 
             packetReply.login_payload = (struct login_payload_s[1]){
                 {
-                    .server_address = "127.0.0.1:1117",
-                    .server_address_length = STRLEN("127.0.0.1:1117"),
+                    .server_address = "127.0.0.1:60000",
+                    .server_address_length = STRLEN("127.0.0.1:60000"),
                     .server_ticket = "7y3Bh44sKWZCYZH",
                     .server_ticket_length = STRLEN("7y3Bh44sKWZCYZH"),
                     .encryption_key =

@@ -197,7 +197,7 @@ void GatewayTunnelDataSend(AppState* app, SessionState* session, u8* baseBuffer,
 
     u32 packedLen =
         GatewayPacketPack(GatewayKindTunnelPacketToExternalConnection, &tunnelPacket, baseBuffer);
-    OutputStreamWrite(app, session, &session->outputStream, baseBuffer, packedLen, false);
+    OutputStreamWrite(app, session, &session->outputStream, baseBuffer, packedLen, FALSE);
 }
 
 void GatewayPacketSend(AppState* app, SessionState* session, Arena* arena, u32 maxLen,
@@ -205,7 +205,7 @@ void GatewayPacketSend(AppState* app, SessionState* session, Arena* arena, u32 m
     u8* packedBuffer = arena_push_size(arena, maxLen);
     u32 packedLen = GatewayPacketPack(kind, packetPtr, packedBuffer);
 
-    OutputStreamWrite(app, session, &session->outputStream, packedBuffer, packedLen, false);
+    OutputStreamWrite(app, session, &session->outputStream, packedBuffer, packedLen, FALSE);
 }
 
 void GatewayPacketHandle(AppState* app, SessionState* session, u8* data, u32 dataLen) {
@@ -225,31 +225,31 @@ void GatewayPacketHandle(AppState* app, SessionState* session, u8* data, u32 dat
 
             printf("[*] Enabling encryption for session\n");
 
-            session->inputStream.useEncryption = true;
-            session->outputStream.useEncryption = true;
+            session->inputStream.useEncryption = TRUE;
+            session->outputStream.useEncryption = TRUE;
 
             GatewayLoginReply loginReply = {
-                .isLoggedIn = true,
+                .isLoggedIn = TRUE,
             };
             GatewayPacketSend(app, session, &app->arenaPerTick, 32, GatewayKindLoginReply, &loginReply);
 
             GatewayChannelIsRoutable channelZeroIsRoutable = {
                 .channel = 0,
-                .isRoutable = true,
+                .isRoutable = TRUE,
             };
             GatewayPacketSend(app, session, &app->arenaPerTick, 32, GatewayKindChannelIsRoutable,
                               &channelZeroIsRoutable);
 
             GatewayChannelIsRoutable channelOneIsRoutable = {
                 .channel = 1,
-                .isRoutable = true,
+                .isRoutable = TRUE,
             };
             GatewayPacketSend(app, session, &app->arenaPerTick, 32, GatewayKindChannelIsRoutable,
                               &channelOneIsRoutable);
 
             GatewayChannelIsRoutable channelTwoIsRoutable = {
                 .channel = 2,
-                .isRoutable = true,
+                .isRoutable = TRUE,
             };
             GatewayPacketSend(app, session, &app->arenaPerTick, 32, GatewayKindChannelIsRoutable,
                               &channelTwoIsRoutable);

@@ -133,7 +133,7 @@ void SendSelfToClient(AppState* app, SessionState* session) {
             .head_actor_length = STRLEN("SurvivorMale_Head_01.adr"),
             .hair_model = "SurvivorMale_Hair_MediumMessy.adr", // GetHairModel(session),
             .hair_model_length = STRLEN("SurvivorMale_Hair_MediumMessy.adr"),
-            .is_respawning = false,
+            .is_respawning = FALSE,
             .character_name = session->characterName.name,
             .character_name_length = session->characterName.nameLen,
             .loadout_id = 3,
@@ -157,7 +157,7 @@ void SendSelfToClient(AppState* app, SessionState* session) {
                     },
                 },
             },
-            .is_admin = true,
+            .is_admin = TRUE,
         },
     };
 

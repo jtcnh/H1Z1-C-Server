@@ -39,6 +39,9 @@ typedef double f64;
 #define local_persist static
 #define global static
 
+#define TRUE 1
+#define FALSE 0
+
 #define KB(n) ((n) * 1024)
 #define MB(n) (KB(n) * 1024)
 
@@ -67,7 +70,7 @@ typedef double f64;
 #define ASSERT_MSG(expr, msg)
 #endif // YOTE_SLOW
 
-// NOTE(rhett): Causes a negative subscript error if condition is false
+// NOTE(rhett): Causes a negative subscript error if condition is FALSE
 // TODO(rhett): Probably don't need to undefine these
 #define STATIC_ASSERT_INTERNAL_1(cond, line) typedef char static_assert_line_##line[(!!(cond)) * 2 - 1]
 #define STATIC_ASSERT_INTERNAL_2(cond, line) STATIC_ASSERT_INTERNAL_1(cond, line)
@@ -177,7 +180,7 @@ uptr base_align_forward(uptr ptr, isize align) {
 #if defined(YOTE_USE_ARENA)
 
 #define ARENA_ALIGN_DEFAULT (sizeof(void*) * 2)
-#define ARENA_DEFAULT_PARAMS PASS_PARAMS((.should_clear = true, .alignment = ARENA_ALIGN_DEFAULT))
+#define ARENA_DEFAULT_PARAMS PASS_PARAMS((.should_clear = TRUE, .alignment = ARENA_ALIGN_DEFAULT))
 
 typedef struct Arena Arena;
 struct Arena {
@@ -333,9 +336,9 @@ Substring_List string_ztstring_copy_and_split(char* source, char delim, isize ma
         .substrings = arena_push_array(arena, Buffer, max_substrings),
     };
 
-    b32 is_within_quotes = false;
-    b32 was_within_quotes = false;
-    b32 is_within_arg = false;
+    b32 is_within_quotes = FALSE;
+    b32 was_within_quotes = FALSE;
+    b32 is_within_arg = FALSE;
     isize arg_start = 0;
 
     isize source_size = base_ztstring_size((u8*)source);
@@ -349,30 +352,30 @@ Substring_List string_ztstring_copy_and_split(char* source, char delim, isize ma
             continue;
         } else if (current_char == delim && !is_within_quotes) {
             if (is_within_arg) {
-                is_within_arg = false;
+                is_within_arg = FALSE;
                 isize substring_size = source_pos - arg_start - was_within_quotes;
                 result.substrings[result.substrings_count].size = substring_size;
                 result.substrings[result.substrings_count].data = arena_push_copy_zero_terminate(
                     arena, (void*)((uptr)source + arg_start), substring_size);
                 result.substrings_count += 1;
-                was_within_quotes = false;
+                was_within_quotes = FALSE;
             }
         } else {
             if (!is_within_arg) {
-                is_within_arg = true;
+                is_within_arg = TRUE;
                 arg_start = source_pos;
             }
         }
     }
 
     if (is_within_arg) {
-        is_within_arg = false;
+        is_within_arg = FALSE;
         isize substring_size = source_pos - arg_start - was_within_quotes;
         result.substrings[result.substrings_count].size = substring_size;
         result.substrings[result.substrings_count].data =
             arena_push_copy_zero_terminate(arena, (void*)((uptr)source + arg_start), substring_size);
         result.substrings_count += 1;
-        was_within_quotes = false;
+        was_within_quotes = FALSE;
     }
 
     return result;

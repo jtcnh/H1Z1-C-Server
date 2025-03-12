@@ -51,13 +51,13 @@ packetIdSwitch:
 
             Zone_Packet_ClientUpdate_DoneSendingPreloadCharacters preloadDone = { 0 };
 
-            preloadDone.is_done = true;
+            preloadDone.is_done = TRUE;
 
-            ZonePacketSend(app, session, &app->arenaPerTick, KB(30),
+            ZonePacketSend(app, session, &app->arenaPerTick,
                            Zone_Packet_Kind_ClientUpdate_DoneSendingPreloadCharacters, &preloadDone);
-            ZonePacketSend(app, session, &app->arenaPerTick, KB(10),
+            ZonePacketSend(app, session, &app->arenaPerTick,
                            Zone_Packet_Kind_ZoneDoneSendingInitialData, 0);
-            ZonePacketSend(app, session, &app->arenaPerTick, KB(10),
+            ZonePacketSend(app, session, &app->arenaPerTick,
                            Zone_Packet_Kind_ClientUpdate_NetworkProximityUpdatesComplete, 0);
 
             Zone_Packet_Character_CharacterStateDelta stateDelta = { 0 };
@@ -68,16 +68,16 @@ packetIdSwitch:
             stateDelta.guid_4 = 0x00ull;
             stateDelta.game_time = timer & 0x7fffffff;
 
-            ZonePacketSend(app, session, &app->arenaPerTick, KB(10),
+            ZonePacketSend(app, session, &app->arenaPerTick,
                            Zone_Packet_Kind_Character_CharacterStateDelta, &stateDelta);
 
             Zone_Packet_GameTimeSync gameTimeSync = { 0 };
 
             gameTimeSync.cycle_speed = 12.f;
             gameTimeSync.time = timer;
-            gameTimeSync.unk_bool = false;
+            gameTimeSync.unk_bool = FALSE;
 
-            ZonePacketSend(app, session, &app->arenaPerTick, KB(10), Zone_Packet_Kind_GameTimeSync,
+            ZonePacketSend(app, session, &app->arenaPerTick, Zone_Packet_Kind_GameTimeSync,
                            &gameTimeSync);
         } break;
         case ZONE_CLIENTFINISHEDLOADING_ID: {
@@ -90,7 +90,7 @@ packetIdSwitch:
             setEquipment.unk_string_1_length = STRLEN("Default");
             setEquipment.unk_string_2 = "#";
             setEquipment.unk_string_2_length = STRLEN("#");
-            setEquipment.unk_bool_2 = true;
+            setEquipment.unk_bool_2 = TRUE;
 
             setEquipment.length_1 = (struct length_1_s[1]){
             [0] = {
@@ -124,7 +124,7 @@ packetIdSwitch:
             },
         };
 
-            ZonePacketSend(app, session, &app->arenaPerTick, KB(10),
+            ZonePacketSend(app, session, &app->arenaPerTick,
                            Zone_Packet_Kind_Equipment_SetCharacterEquipment, &setEquipment);
 
             Zone_Packet_Loadout_SetLoadoutSlots setLoadoutSlots = { 0 };
@@ -138,8 +138,8 @@ packetIdSwitch:
             },
         };
 
-            ZonePacketSend(app, session, &app->arenaPerTick, KB(10),
-                           Zone_Packet_Kind_Loadout_SetLoadoutSlots, &setLoadoutSlots);
+            ZonePacketSend(app, session, &app->arenaPerTick, Zone_Packet_Kind_Loadout_SetLoadoutSlots,
+                           &setLoadoutSlots);
         } break;
         case ZONE_GAMETIMESYNC_ID: {
             kind = Zone_Packet_Kind_GameTimeSync;
@@ -147,11 +147,11 @@ packetIdSwitch:
 
             Zone_Packet_GameTimeSync gameTimeSync = { 0 };
 
-            gameTimeSync.cycle_speed = 12.f;
-            gameTimeSync.time = timer;
-            gameTimeSync.unk_bool = false;
+            gameTimeSync.cycle_speed = 10.f;
+            gameTimeSync.time = 0x0bull;
+            gameTimeSync.unk_bool = TRUE;
 
-            ZonePacketSend(app, session, &app->arenaPerTick, KB(10), Zone_Packet_Kind_GameTimeSync,
+            ZonePacketSend(app, session, &app->arenaPerTick, Zone_Packet_Kind_GameTimeSync,
                            &gameTimeSync);
         } break;
         case ZONE_GETCONTINENTBATTLEINFO_ID: {
@@ -173,8 +173,8 @@ packetIdSwitch:
             },
         };
 
-            ZonePacketSend(app, session, &app->arenaPerTick, KB(10),
-                           Zone_Packet_Kind_ContinentBattleInfo, &battleInfo);
+            ZonePacketSend(app, session, &app->arenaPerTick, Zone_Packet_Kind_ContinentBattleInfo,
+                           &battleInfo);
         } break;
         case ZONE_CLIENTINITIALIZATIONDETAILS_ID: {
             kind = Zone_Packet_Kind_ClientInitializationDetails;
@@ -187,7 +187,7 @@ packetIdSwitch:
             Zone_Packet_WallOfData_UIEvent uiEvent = { 0 };
             zone_packet_unpack(data + 2, dataLen - 2, kind, &uiEvent, &app->arenaPerTick);
 
-            ZonePacketSend(app, session, &app->arenaPerTick, KB(10), kind, &uiEvent);
+            ZonePacketSend(app, session, &app->arenaPerTick, kind, &uiEvent);
         } break;
         case ZONE_WALLOFDATA_CLIENTSYSTEMINFO_ID: {
             kind = Zone_Packet_Kind_WallOfData_ClientSystemInfo;
@@ -196,7 +196,7 @@ packetIdSwitch:
             Zone_Packet_WallOfData_ClientSystemInfo systemInfo = { 0 };
             zone_packet_unpack(data + 2, dataLen - 2, kind, &systemInfo, &app->arenaPerTick);
 
-            ZonePacketSend(app, session, &app->arenaPerTick, KB(10), kind, &systemInfo);
+            ZonePacketSend(app, session, &app->arenaPerTick, kind, &systemInfo);
         } break;
         case ZONE_WALLOFDATA_CLIENTTRANSITION_ID: {
             kind = Zone_Packet_Kind_WallOfData_ClientTransition;
@@ -205,7 +205,7 @@ packetIdSwitch:
             Zone_Packet_WallOfData_ClientTransition clientTransition = { 0 };
             zone_packet_unpack(data + 2, dataLen - 2, kind, &clientTransition, &app->arenaPerTick);
 
-            ZonePacketSend(app, session, &app->arenaPerTick, KB(10), kind, &clientTransition);
+            ZonePacketSend(app, session, &app->arenaPerTick, kind, &clientTransition);
         } break;
         case ZONE_SETLOCALE_ID: {
             kind = Zone_Packet_Kind_SetLocale;
@@ -216,7 +216,7 @@ packetIdSwitch:
             setLocale.locale = "en_US";
             setLocale.locale_length = STRLEN("en_US");
 
-            ZonePacketSend(app, session, &app->arenaPerTick, KB(10), kind, &setLocale);
+            ZonePacketSend(app, session, &app->arenaPerTick, kind, &setLocale);
         } break;
         case ZONE_CLIENTLOG_ID: {
             kind = Zone_Packet_Kind_ClientLog;
@@ -237,7 +237,7 @@ packetIdSwitch:
             Zone_Packet_KeepAlive keepAlive = { 0 };
             zone_packet_unpack(data + 1, dataLen - 1, kind, &keepAlive, &app->arenaPerTick);
 
-            ZonePacketSend(app, session, &app->arenaPerTick, KB(10), kind, &keepAlive);
+            ZonePacketSend(app, session, &app->arenaPerTick, kind, &keepAlive);
         } break;
         case ZONE_STATICVIEWREQUEST_ID: {
             kind = Zone_Packet_Kind_StaticViewRequest;
@@ -252,17 +252,17 @@ packetIdSwitch:
             Zone_Packet_PlayerWorldTransferReply tranferReply = { 0 };
             tranferReply.world_id_reply = 1;
 
-            ZonePacketSend(app, session, &app->arenaPerTick, KB(10),
-                           Zone_Packet_Kind_PlayerWorldTransferReply, &tranferReply);
+            ZonePacketSend(app, session, &app->arenaPerTick, Zone_Packet_Kind_PlayerWorldTransferReply,
+                           &tranferReply);
 
             Zone_Packet_ClientUpdate_UpdateLocation updateLocation = {
                 .position = { .x = 1000.f, .y = 1000.f, .z = 1000.f, .w = 1.f },
                 .rotation = { .x = 0.f, .y = 0.f, .z = 0.f, .w = 1.f },
-                .trigger_loading_screen = true,
+                .trigger_loading_screen = TRUE,
                 .unk_u8_1 = 0,
-                .unk_bool = false,
+                .unk_bool = FALSE,
             };
-            ZonePacketSend(app, session, &app->arenaPerTick, KB(10),
+            ZonePacketSend(app, session, &app->arenaPerTick,
                            Zone_Packet_Kind_ClientUpdate_UpdateLocation, &updateLocation);
 
             Zone_Packet_ClientBeginZoning beginZoning = {
@@ -280,11 +280,11 @@ packetIdSwitch:
                 .zone_id_2 = 0,
                 .name_id = 7699,
                 .unk_dword_1 = 674234378,
-                .unk_bool_1 = false,
-                .wait_for_zone_ready = false,
-                .unk_bool_2 = false,
+                .unk_bool_1 = FALSE,
+                .wait_for_zone_ready = FALSE,
+                .unk_bool_2 = FALSE,
             };
-            ZonePacketSend(app, session, &app->arenaPerTick, KB(10), Zone_Packet_Kind_ClientBeginZoning,
+            ZonePacketSend(app, session, &app->arenaPerTick, Zone_Packet_Kind_ClientBeginZoning,
                            &beginZoning);
 
             Zone_Packet_Equipment_SetCharacterEquipment setEquipment = { 0 };
@@ -293,7 +293,7 @@ packetIdSwitch:
             setEquipment.unk_string_1_length = STRLEN("Default");
             setEquipment.unk_string_2 = "#";
             setEquipment.unk_string_2_length = STRLEN("#");
-            setEquipment.unk_bool_2 = true;
+            setEquipment.unk_bool_2 = TRUE;
 
             setEquipment.length_1 = (struct length_1_s[1]){
             [0] = {
@@ -326,7 +326,7 @@ packetIdSwitch:
                 .decal_alias_length = STRLEN("#"),
             },
         };
-            ZonePacketSend(app, session, &app->arenaPerTick, KB(10),
+            ZonePacketSend(app, session, &app->arenaPerTick,
                            Zone_Packet_Kind_Equipment_SetCharacterEquipment, &setEquipment);
 
             Zone_Packet_Loadout_SetLoadoutSlots setLoadoutSlots = {
@@ -348,8 +348,8 @@ packetIdSwitch:
 
             .current_slot_id = 0,
         };
-            ZonePacketSend(app, session, &app->arenaPerTick, KB(10),
-                           Zone_Packet_Kind_Loadout_SetLoadoutSlots, &setLoadoutSlots);
+            ZonePacketSend(app, session, &app->arenaPerTick, Zone_Packet_Kind_Loadout_SetLoadoutSlots,
+                           &setLoadoutSlots);
 
             SendSelfToClient(app, session);
         } break;

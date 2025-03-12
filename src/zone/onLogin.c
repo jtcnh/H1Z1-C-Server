@@ -3,14 +3,14 @@ void OnLogin(AppState* app, SessionState* session) {
         .environment = "LIVE_KOTK",
         .environment_length = STRLEN("LIVE_KOTK"),
     };
-    ZonePacketSend(app, session, &app->arenaPerTick, KB(10), Zone_Packet_Kind_InitializationParameters,
+    ZonePacketSend(app, session, &app->arenaPerTick, Zone_Packet_Kind_InitializationParameters,
                    &init_params);
 
     Zone_Packet_SendZoneDetails send_zone_details = {
         .zone_name = "LoginZone",
         .zone_name_length = STRLEN("LoginZone"),
         .zone_type = 4,
-        .unk_bool = false,
+        .unk_bool = FALSE,
 
         .overcast = 0,
         .fogDensity = 0,
@@ -51,25 +51,25 @@ void OnLogin(AppState* app, SessionState* session) {
         .zone_id = 5,
         .zone_id_2 = 5,
         .name_id = 7699,
-        .unk_bool2 = true,
+        .unk_bool2 = TRUE,
         .lighting = "Lighting_Z2.txt",
         .lighting_length = STRLEN("Lighting_Z2.txt"),
-        .unk_bool3 = false,
-        .unk_bool4 = false,
+        .unk_bool3 = FALSE,
+        .unk_bool4 = FALSE,
     };
-    ZonePacketSend(app, session, &app->arenaPerTick, KB(10), Zone_Packet_Kind_SendZoneDetails,
+    ZonePacketSend(app, session, &app->arenaPerTick, Zone_Packet_Kind_SendZoneDetails,
                    &send_zone_details);
 
     Zone_Packet_ClientGameSettings game_settings = {
         .interact_glow_and_dist = 16,
-        .unk_bool = true,
+        .unk_bool = TRUE,
         .timescale = 1.0,
         .enable_weapons = 1,
         .unk_u32_2 = 1,
         .unk_float2 = 15.,
         .damage_multiplier = 11.,
     };
-    ZonePacketSend(app, session, &app->arenaPerTick, KB(10), Zone_Packet_Kind_ClientGameSettings,
+    ZonePacketSend(app, session, &app->arenaPerTick, Zone_Packet_Kind_ClientGameSettings,
                    &game_settings);
 
     Zone_Packet_UpdateWeatherData updt_weather_data = {
@@ -109,7 +109,7 @@ void OnLogin(AppState* app, SessionState* session) {
         .cloudSilverLiningBrightness = 0.5f,
         .cloudShadows = 0.2f,
     };
-    ZonePacketSend(app, session, &app->arenaPerTick, KB(10), Zone_Packet_Kind_UpdateWeatherData,
+    ZonePacketSend(app, session, &app->arenaPerTick, Zone_Packet_Kind_UpdateWeatherData,
                    &updt_weather_data);
 
     SendSelfToClient(app, session);

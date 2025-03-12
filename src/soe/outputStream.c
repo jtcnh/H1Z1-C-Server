@@ -8,7 +8,7 @@ void OutputStreamWrite(AppState* app, SessionState* session, SOEOutputStream* ou
         output->sequence++;
 
         if (*output->dataCallbackPtr) {
-            (*output->dataCallbackPtr)(app, session, data, dataLen, output->sequence, false);
+            (*output->dataCallbackPtr)(app, session, data, dataLen, output->sequence, FALSE);
         }
     } else {
         ASSERT((MAX_PACKET_LENGTH - DATA_HEADER_LENGTH) == (512 - 4)
@@ -27,7 +27,7 @@ void OutputStreamWrite(AppState* app, SessionState* session, SOEOutputStream* ou
 
             if (*output->dataCallbackPtr) {
                 (*output->dataCallbackPtr)(app, session, tempBuffer, partialDataLen + initalOffset,
-                                           output->sequence, true);
+                                           output->sequence, TRUE);
             }
 
             i += partialDataLen;

@@ -6,7 +6,7 @@ void LoginPacketSend(AppState* app, SessionState* session, Arena* arena, u32 max
     u8* dataBuffer = arena_push_size(arena, maxLen);
     u32 dataBufferLen = login_packet_pack(kind, packetPtr, dataBuffer);
 
-    OutputStreamWrite(app, session, &session->outputStream, dataBuffer, dataBufferLen, false);
+    OutputStreamWrite(app, session, &session->outputStream, dataBuffer, dataBufferLen, FALSE);
 }
 
 // ############################################//
@@ -20,7 +20,7 @@ void LoginPacketRawFileSend(AppState* app, SessionState* session, Arena* arena, 
     u32 totalLen = packedLen;
 
     arena_rewind(arena, maxLen - totalLen);
-    OutputStreamWrite(app, session, &session->outputStream, baseBuffer, packedLen, false);
+    OutputStreamWrite(app, session, &session->outputStream, baseBuffer, packedLen, FALSE);
 }
 
 // #######################################################//
@@ -150,7 +150,7 @@ void CharacterSelectInfo(AppState* app, SessionState* session) {
     Login_Packet_CharacterSelectInfoReply packetReply = { 0 };
 
     packetReply.character_status = 1;
-    packetReply.can_bypass_server_lock = true;
+    packetReply.can_bypass_server_lock = TRUE;
 
     packetReply.characters_count = 1;
     packetReply.characters = (struct characters_s[1]){
