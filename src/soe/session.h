@@ -145,10 +145,8 @@ typedef struct pGetPlayerActorData pGetPlayerActorData;
 struct pGetPlayerActorData {
     u32 headType;
     u32 actorModelId;
-    u32 hairModelLen;
-    char* hairModel;
-    u32 headActorLen;
-    char* headActor;
+    String8 hairModel;
+    String8 headActor;
     u32 gender;
 };
 

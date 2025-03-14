@@ -110,8 +110,7 @@ b8 active;
 u32 remaining_count;
 String8 raw_data;
 }* account_features;
-u32 application_payload_length;
-u8* application_payload;
+String8 application_payload;
 u32 error_details_count;
 struct error_details_s
 {
@@ -178,8 +177,7 @@ u8 unk_byte_1;
 u8 unk_byte_2;
 String8 server_address;
 String8 server_ticket;
-u32 encryption_key_length;
-u8* encryption_key;
+String8 encryption_key;
 u32 soe_protocol_version;
 u64 character_id;
 u64 unk_u64;
@@ -235,8 +233,7 @@ struct Login_Packet_CharacterDeleteReply
 {
 u64 character_id;
 u32 status;
-u32 payload3_length;
-u8* payload3;
+String8 payload3;
 };
 
 
@@ -547,12 +544,12 @@ offset++;
 } // account_features
 
 // bytes application_payload
-endian_write_u32_little(buffer + offset, packet->application_payload_length);
+endian_write_u32_little(buffer + offset, packet->application_payload.size);
 offset += sizeof(u32);
-printf("-- BYTES_LENGTH            \t%lld\t%llxh\t%f\n", (i64)packet->application_payload_length, (u64)packet->application_payload_length, (f64)packet->application_payload_length);
-for (u32 application_payload_iter = 0; application_payload_iter < packet->application_payload_length; application_payload_iter++)
+printf("-- BYTES_LENGTH            \t%lld\t%llxh\t%f\n", (i64)packet->application_payload.size, (u64)packet->application_payload.size, (f64)packet->application_payload.size);
+for (u32 application_payload_iter = 0; application_payload_iter < packet->application_payload.size; application_payload_iter++)
 {
-endian_write_u8_little(buffer + offset, packet->application_payload[application_payload_iter]);
+endian_write_u8_little(buffer + offset, packet->application_payload.data[application_payload_iter]);
 offset++;
 }
 
@@ -822,12 +819,12 @@ offset++;
 }
 
 // bytes encryption_key
-endian_write_u32_little(buffer + offset, packet->login_payload[login_payload_iter].encryption_key_length);
+endian_write_u32_little(buffer + offset, packet->login_payload[login_payload_iter].encryption_key.size);
 offset += sizeof(u32);
-printf("-- BYTES_LENGTH            \t%lld\t%llxh\t%f\n", (i64)packet->login_payload[login_payload_iter].encryption_key_length, (u64)packet->login_payload[login_payload_iter].encryption_key_length, (f64)packet->login_payload[login_payload_iter].encryption_key_length);
-for (u32 encryption_key_iter = 0; encryption_key_iter < packet->login_payload[login_payload_iter].encryption_key_length; encryption_key_iter++)
+printf("-- BYTES_LENGTH            \t%lld\t%llxh\t%f\n", (i64)packet->login_payload[login_payload_iter].encryption_key.size, (u64)packet->login_payload[login_payload_iter].encryption_key.size, (f64)packet->login_payload[login_payload_iter].encryption_key.size);
+for (u32 encryption_key_iter = 0; encryption_key_iter < packet->login_payload[login_payload_iter].encryption_key.size; encryption_key_iter++)
 {
-endian_write_u8_little(buffer + offset, packet->login_payload[login_payload_iter].encryption_key[encryption_key_iter]);
+endian_write_u8_little(buffer + offset, packet->login_payload[login_payload_iter].encryption_key.data[encryption_key_iter]);
 offset++;
 }
 
@@ -1053,12 +1050,12 @@ offset += sizeof(u32);
 printf("-- status                  \t%lld\t%llxh\t%f\n", (i64)packet->status, (u64)packet->status, (f64)packet->status);
 
 // bytes payload3
-endian_write_u32_little(buffer + offset, packet->payload3_length);
+endian_write_u32_little(buffer + offset, packet->payload3.size);
 offset += sizeof(u32);
-printf("-- BYTES_LENGTH            \t%lld\t%llxh\t%f\n", (i64)packet->payload3_length, (u64)packet->payload3_length, (f64)packet->payload3_length);
-for (u32 payload3_iter = 0; payload3_iter < packet->payload3_length; payload3_iter++)
+printf("-- BYTES_LENGTH            \t%lld\t%llxh\t%f\n", (i64)packet->payload3.size, (u64)packet->payload3.size, (f64)packet->payload3.size);
+for (u32 payload3_iter = 0; payload3_iter < packet->payload3.size; payload3_iter++)
 {
-endian_write_u8_little(buffer + offset, packet->payload3[payload3_iter]);
+endian_write_u8_little(buffer + offset, packet->payload3.data[payload3_iter]);
 offset++;
 }
 
@@ -1984,13 +1981,13 @@ offset++;
 } // account_features
 
 // bytes application_payload
-packet->application_payload_length = endian_read_u32_little(data + offset);
+packet->application_payload.size = endian_read_u32_little(data + offset);
 offset += sizeof(u32);
-packet->application_payload = arena_push_size(arena, packet->application_payload_length);
-printf("-- BYTES_LENGTH            \t%d\n", packet->application_payload_length);
-for (u32 application_payload_iter = 0; application_payload_iter < packet->application_payload_length; application_payload_iter++)
+packet->application_payload.data = arena_push_size(arena, packet->application_payload.size);
+printf("-- BYTES_LENGTH            \t%d\n", packet->application_payload.size);
+for (u32 application_payload_iter = 0; application_payload_iter < packet->application_payload.size; application_payload_iter++)
 {
-packet->application_payload[application_payload_iter] = *(u8*)((uptr)data + offset);
+packet->application_payload.data[application_payload_iter] = *(u8*)((uptr)data + offset);
 offset++;
 }
 
@@ -2234,13 +2231,13 @@ offset++;
 }
 
 // bytes encryption_key
-packet->login_payload[login_payload_iter].encryption_key_length = endian_read_u32_little(data + offset);
+packet->login_payload[login_payload_iter].encryption_key.size = endian_read_u32_little(data + offset);
 offset += sizeof(u32);
-packet->login_payload[login_payload_iter].encryption_key = arena_push_size(arena, packet->login_payload[login_payload_iter].encryption_key_length);
-printf("-- BYTES_LENGTH            \t%d\n", packet->login_payload[login_payload_iter].encryption_key_length);
-for (u32 encryption_key_iter = 0; encryption_key_iter < packet->login_payload[login_payload_iter].encryption_key_length; encryption_key_iter++)
+packet->login_payload[login_payload_iter].encryption_key.data = arena_push_size(arena, packet->login_payload[login_payload_iter].encryption_key.size);
+printf("-- BYTES_LENGTH            \t%d\n", packet->login_payload[login_payload_iter].encryption_key.size);
+for (u32 encryption_key_iter = 0; encryption_key_iter < packet->login_payload[login_payload_iter].encryption_key.size; encryption_key_iter++)
 {
-packet->login_payload[login_payload_iter].encryption_key[encryption_key_iter] = *(u8*)((uptr)data + offset);
+packet->login_payload[login_payload_iter].encryption_key.data[encryption_key_iter] = *(u8*)((uptr)data + offset);
 offset++;
 }
 
@@ -2439,13 +2436,13 @@ offset += sizeof(u32);
 printf("-- status                  \t%lld\t%llxh\t%f\n", (i64)packet->status, (u64)packet->status, (f64)packet->status);
 
 // bytes payload3
-packet->payload3_length = endian_read_u32_little(data + offset);
+packet->payload3.size = endian_read_u32_little(data + offset);
 offset += sizeof(u32);
-packet->payload3 = arena_push_size(arena, packet->payload3_length);
-printf("-- BYTES_LENGTH            \t%d\n", packet->payload3_length);
-for (u32 payload3_iter = 0; payload3_iter < packet->payload3_length; payload3_iter++)
+packet->payload3.data = arena_push_size(arena, packet->payload3.size);
+printf("-- BYTES_LENGTH            \t%d\n", packet->payload3.size);
+for (u32 payload3_iter = 0; payload3_iter < packet->payload3.size; payload3_iter++)
 {
-packet->payload3[payload3_iter] = *(u8*)((uptr)data + offset);
+packet->payload3.data[payload3_iter] = *(u8*)((uptr)data + offset);
 offset++;
 }
 

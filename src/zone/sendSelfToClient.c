@@ -81,6 +81,7 @@ char* GetHairModel(u32 actorModelId) {
     }
 }
 
+/*
 u32 GetHairModelLen(char* hairModel) {
     if (hairModel) {
         return STRLEN(hairModel);
@@ -89,6 +90,7 @@ u32 GetHairModelLen(char* hairModel) {
         return 0;
     }
 }
+    */
 
 u32 getResourceType(u32 resourceId) {
     switch (resourceId) {

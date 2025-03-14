@@ -1,14 +1,12 @@
 void OnLogin(AppState* app, SessionState* session) {
     Zone_Packet_InitializationParameters init_params = {
-        .environment = "LIVE_KOTK",
-        .environment_length = STRLEN("LIVE_KOTK"),
+        .environment = STR8("LIVE_KOTK"),
     };
     ZonePacketSend(app, session, &app->arenaPerTick, Zone_Packet_Kind_InitializationParameters,
                    &init_params);
 
     Zone_Packet_SendZoneDetails send_zone_details = {
-        .zone_name = "LoginZone",
-        .zone_name_length = STRLEN("LoginZone"),
+        .zone_name = STR8("LoginZone"),
         .zone_type = 4,
         .unk_bool = FALSE,
 
@@ -33,8 +31,7 @@ void OnLogin(AppState* app, SessionState* session) {
         .wind = 3,
         .rainMinStrength = 0,
         .rainRampUpTimeSeconds = 1,
-        .cloudFile = "sky_Z_Clouds.xml",
-        .cloudFile_length = STRLEN("sky_Z_Clouds.xml"),
+        .cloudFile = STR8("sky_Z_Clouds.xml"),
         .stratusCloudTiling = 0.2f,
         .stratusCloudScrollU = -0.002f,
         .stratusCloudScrollV = 0,
@@ -52,8 +49,7 @@ void OnLogin(AppState* app, SessionState* session) {
         .zone_id_2 = 5,
         .name_id = 7699,
         .unk_bool2 = TRUE,
-        .lighting = "Lighting_Z2.txt",
-        .lighting_length = STRLEN("Lighting_Z2.txt"),
+        .lighting = STR8("Lighting_Z2.txt"),
         .unk_bool3 = FALSE,
         .unk_bool4 = FALSE,
     };
@@ -94,8 +90,7 @@ void OnLogin(AppState* app, SessionState* session) {
         .wind = 3,
         .rainMinStrength = 0,
         .rainRampUpTimeSeconds = 1,
-        .cloudFile = "sky_Z_Clouds.xml",
-        .cloudFile_length = STRLEN("sky_Z_Clouds.xml"),
+        .cloudFile = STR8("sky_Z_Clouds.xml"),
         .stratusCloudTiling = 0.2f,
         .stratusCloudScrollU = -0.002f,
         .stratusCloudScrollV = 0,

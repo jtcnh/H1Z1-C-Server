@@ -139,9 +139,7 @@ void LoginPacketHandler(AppState* app, SessionState* session, u8* data, u32 data
                     .server_address = STR8("127.0.0.1:60000"),
                     .server_ticket = STR8("7y3Bh44sKWZCYZH"),
                     .encryption_key =
-                        "\x17\xbd\x08\x6b\x1b\x94\xf0\x2f\xf0\xec\x53\xd7\x63\x58\x9b\x5f",
-                    .encryption_key_length =
-                        STRLEN("\x17\xbd\x08\x6b\x1b\x94\xf0\x2f\xf0\xec\x53\xd7\x63\x58\x9b\x5f"),
+                        STR8("\x17\xbd\x08\x6b\x1b\x94\xf0\x2f\xf0\xec\x53\xd7\x63\x58\x9b\x5f"),
                     .soe_protocol_version = 3,
                     .character_id = packet.character_id,
                     .character_name = session->characterName,

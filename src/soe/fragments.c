@@ -1,7 +1,8 @@
 FragmentPool FragmentCreate(u32 capacity, u32 packetlen, Arena* arena) {
     FragmentPool pool = {
+        .capacity = capacity,
         .packetLen = packetlen,
-        .entry = arena_push_array(arena, FragmentEntry, capacity), // cba
+        .entry = arena_push_array(arena, FragmentEntry, capacity),
         .buffer = arena_push_size(arena, packetlen * capacity),
     };
 
@@ -10,10 +11,7 @@ FragmentPool FragmentCreate(u32 capacity, u32 packetlen, Arena* arena) {
 
 void FragmentInsert(FragmentPool* pool, i32 sequence, u8* data, u32 dataLen, b32 isFragment) {
     if (sequence < pool->sequenceBase) {
-        i32 diff = pool->sequenceBase - sequence;
-
-        pool->sequenceBase = sequence;
-        pool->bufferTail -= diff * pool->packetLen;
+        sequence = pool->sequenceBase;
     }
 
     i32 index = sequence - pool->sequenceBase;
@@ -60,5 +58,8 @@ void FragmentAdvance(FragmentPool* pool) {
         pool->entry[i].isFragment = 0;
     }
 
-    pool->fragmentCount = 0;
+    if (pool->fragmentCount >= MAX_FRAGMENTS) {
+        pool->fragmentCount = 0;
+        pool->sequenceBase = 0; // NOTE: double check this
+    }
 }

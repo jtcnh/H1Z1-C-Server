@@ -24,8 +24,6 @@ typedef unsigned char uchar;
 typedef float f32;
 typedef double f64;
 
-#define STRLEN(s) ((sizeof(s) / sizeof(s[0])) - 1)
-
 #if defined(YOTE_INTERNAL)
 // NOTE(rhett): removing static linkage to play along with superluminal
 #define internal
@@ -131,10 +129,10 @@ STATIC_ASSERT(SIZE_OF(isize) == 4 || SIZE_OF(isize) == 8);
 typedef struct Buffer Buffer;
 struct Buffer {
     uptr size;
-    char* data;
+    u8* data;
 };
-
 typedef Buffer String8; // fuckin' strings man, how do they work??? idk what else to say lol
+
 String8 string8_make(const u8* memory, uptr size) {
     String8 result = { 0 };
     result.size = size;

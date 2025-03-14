@@ -277,7 +277,7 @@ void StaticViewBase(AppState* app, SessionState* session, u8* data, u32 dataLen)
 
     printf("StaticView Loc: %s\n", request.viewpoint);
 
-    if (strcmp(request.viewpoint, "kotkdefault") == 0) {
+    if (strcmp(request.viewpoint.data, "kotkdefault") == 0) {
         Zone_Packet_ClientUpdate_UpdateLocation updateLoc = {
             .position = { .x = -32.26f, .y = 506.41f, .z = 280.21f, .w = 1.f },
             .rotation = { .x = -0.11f, .y = -0.58f, .z = -0.08f, .w = 1.f },

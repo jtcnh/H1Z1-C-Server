@@ -86,10 +86,8 @@ packetIdSwitch:
 
             Zone_Packet_Equipment_SetCharacterEquipment setEquipment = { 0 };
 
-            setEquipment.unk_string_1 = "Default";
-            setEquipment.unk_string_1_length = STRLEN("Default");
-            setEquipment.unk_string_2 = "#";
-            setEquipment.unk_string_2_length = STRLEN("#");
+            setEquipment.unk_string_1 = STR8("Default");
+            setEquipment.unk_string_2 = STR8("#");
             setEquipment.unk_bool_2 = TRUE;
 
             setEquipment.length_1 = (struct length_1_s[1]){
@@ -104,10 +102,8 @@ packetIdSwitch:
             [0] = {
                 .length_2 = (struct length_2_s[1]){
                     [0] = {
-                        .tint_alias = "Default",
-                        .tint_alias_length = STRLEN("Default"),
-                        .decal_alias = "#",
-                        .decal_alias_length = STRLEN("#"),
+                        .tint_alias = STR8("Default"),
+                        .decal_alias = STR8("#"),
                     },
                 },
             },
@@ -117,10 +113,8 @@ packetIdSwitch:
 
             setEquipment.attachments_data_1 = (struct attachments_data_1_s[1]){
             [0] = {
-                .tint_alias = "Default",
-                .tint_alias_length = STRLEN("Default"),
-                .decal_alias = "#",
-                .decal_alias_length = STRLEN("#"),
+                .tint_alias = STR8("Default"),
+                .decal_alias = STR8("#"),
             },
         };
 
@@ -166,8 +160,7 @@ packetIdSwitch:
                 .continent_id = 1,
                 .info_name_id = 1,
                 .zone_description_id = 1,
-                .zone_name = "LoginZone",
-                .zone_name_length = STRLEN("LoginZone"),
+                .zone_name = STR8("LoginZone"),
                 .hex_size = 100,
                 .is_production_zone = 1,
             },
@@ -212,9 +205,7 @@ packetIdSwitch:
             printf(MESSAGE_CONCAT_INFO("Handling %s\n"), zone_packet_names[kind]);
 
             Zone_Packet_SetLocale setLocale = { 0 };
-
-            setLocale.locale = "en_US";
-            setLocale.locale_length = STRLEN("en_US");
+            setLocale.locale = STR8("en_US");
 
             ZonePacketSend(app, session, &app->arenaPerTick, kind, &setLocale);
         } break;
@@ -266,14 +257,12 @@ packetIdSwitch:
                            Zone_Packet_Kind_ClientUpdate_UpdateLocation, &updateLocation);
 
             Zone_Packet_ClientBeginZoning beginZoning = {
-                .zone_name = "Z2",
-                .zone_name_length = STRLEN("Z2"),
+                .zone_name = STR8("Z2"),
                 .zone_type = 4,
                 .pos = { .x = 1000.f, .y = 1000.f, .z = 1000.f, .w = 1.f },
                 .rot = { .x = 0.f, .y = 0.f, .z = 0.f, .w = 1.f },
 
-                .cloudFile = "sky_Z_Clouds.xml",
-                .cloudFile_length = STRLEN("sky_Z_Clouds.xml"),
+                .cloudFile = STR8("sky_Z_Clouds.xml"),
 
                 .unk_byte_1 = 5,
                 .zone_id_1 = 5,
@@ -289,10 +278,8 @@ packetIdSwitch:
 
             Zone_Packet_Equipment_SetCharacterEquipment setEquipment = { 0 };
 
-            setEquipment.unk_string_1 = "Default";
-            setEquipment.unk_string_1_length = STRLEN("Default");
-            setEquipment.unk_string_2 = "#";
-            setEquipment.unk_string_2_length = STRLEN("#");
+            setEquipment.unk_string_1 = STR8("Default");
+            setEquipment.unk_string_2 = STR8("#");
             setEquipment.unk_bool_2 = TRUE;
 
             setEquipment.length_1 = (struct length_1_s[1]){
@@ -307,10 +294,8 @@ packetIdSwitch:
             [0] = {
                 .length_2 = (struct length_2_s[1]){
                     [0] = {
-                        .tint_alias = "Default",
-                        .tint_alias_length = STRLEN("Default"),
-                        .decal_alias = "#",
-                        .decal_alias_length = STRLEN("#"),
+                        .tint_alias = STR8("Default"),
+                        .decal_alias = STR8("#"),
                     },
                 },
             },
@@ -320,10 +305,8 @@ packetIdSwitch:
 
             setEquipment.attachments_data_1 = (struct attachments_data_1_s[1]){
             [0] = {
-                .tint_alias = "Default",
-                .tint_alias_length = STRLEN("Default"),
-                .decal_alias = "#",
-                .decal_alias_length = STRLEN("#"),
+                .tint_alias = STR8("Default"),
+                .decal_alias = STR8("#"),
             },
         };
             ZonePacketSend(app, session, &app->arenaPerTick,
