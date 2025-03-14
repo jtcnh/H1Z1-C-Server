@@ -2108,14 +2108,10 @@ void emit_c_source(Parser_Object_Kind kind, Parser_State state_stack[MAX_STATE_S
                 output_buffers->unpacker_buffer + output_buffers->unpacker_buffer_tail, ");\n\n");
         } break;
         case PO_Field_String: {
-            output_buffers->main_struct_buffer_tail +=
-                sprintf(output_buffers->main_struct_buffer + output_buffers->main_struct_buffer_tail,
-                        "%s %s_length;\n", token_names[state_stack[state_stack_tail].length_type],
-                        identifier_buffer);
 
             output_buffers->main_struct_buffer_tail +=
                 sprintf(output_buffers->main_struct_buffer + output_buffers->main_struct_buffer_tail,
-                        "char* %s;\n", identifier_buffer);
+                        "String8 %s;\n", identifier_buffer);
 
             output_buffers->packer_buffer_tail += sprintf(
                 output_buffers->packer_buffer + output_buffers->packer_buffer_tail, "// %s %s\n",
@@ -2132,7 +2128,7 @@ void emit_c_source(Parser_Object_Kind kind, Parser_State state_stack[MAX_STATE_S
                                     state_stack, state_stack_tail, depth);
             output_buffers->packer_buffer_tail +=
                 sprintf(output_buffers->packer_buffer + output_buffers->packer_buffer_tail,
-                        "%s_length);\noffset += sizeof(%s);\n", identifier_buffer,
+                        "%s.size);\noffset += sizeof(%s);\n", identifier_buffer,
                         token_names[state_stack[state_stack_tail].length_type]);
 
             output_buffers->packer_buffer_tail +=
@@ -2144,21 +2140,21 @@ void emit_c_source(Parser_Object_Kind kind, Parser_State state_stack[MAX_STATE_S
                                     state_stack, state_stack_tail, depth);
             output_buffers->packer_buffer_tail +=
                 sprintf(output_buffers->packer_buffer + output_buffers->packer_buffer_tail,
-                        "%s_length, (u64)", identifier_buffer);
+                        "%s.size, (u64)", identifier_buffer);
 
             output_buffers->packer_buffer_tail +=
                 write_field_parents(output_buffers->packer_buffer, output_buffers->packer_buffer_tail,
                                     state_stack, state_stack_tail, depth);
             output_buffers->packer_buffer_tail +=
                 sprintf(output_buffers->packer_buffer + output_buffers->packer_buffer_tail,
-                        "%s_length, (f64)", identifier_buffer);
+                        "%s.size, (f64)", identifier_buffer);
 
             output_buffers->packer_buffer_tail +=
                 write_field_parents(output_buffers->packer_buffer, output_buffers->packer_buffer_tail,
                                     state_stack, state_stack_tail, depth);
             output_buffers->packer_buffer_tail +=
                 sprintf(output_buffers->packer_buffer + output_buffers->packer_buffer_tail,
-                        "%s_length);\n", identifier_buffer);
+                        "%s.size);\n", identifier_buffer);
 
             output_buffers->packer_buffer_tail +=
                 sprintf(output_buffers->packer_buffer + output_buffers->packer_buffer_tail,
@@ -2169,11 +2165,11 @@ void emit_c_source(Parser_Object_Kind kind, Parser_State state_stack[MAX_STATE_S
                                     state_stack, state_stack_tail, depth);
             output_buffers->packer_buffer_tail +=
                 sprintf(output_buffers->packer_buffer + output_buffers->packer_buffer_tail,
-                        "%s_length; %s_iter++)\n{\n", identifier_buffer, identifier_buffer);
+                        "%s.size; %s_iter++)\n{\n", identifier_buffer, identifier_buffer);
 
             output_buffers->packer_buffer_tail +=
                 sprintf(output_buffers->packer_buffer + output_buffers->packer_buffer_tail,
-                        "endian_write_i8_%s(buffer + offset, ",
+                        "endian_write_u8_%s(buffer + offset, ",
                         token_names[state_stack[state_stack_tail].endian]);
 
             output_buffers->packer_buffer_tail +=
@@ -2181,7 +2177,7 @@ void emit_c_source(Parser_Object_Kind kind, Parser_State state_stack[MAX_STATE_S
                                     state_stack, state_stack_tail, depth);
             output_buffers->packer_buffer_tail +=
                 sprintf(output_buffers->packer_buffer + output_buffers->packer_buffer_tail,
-                        "%s[%s_iter]);\n", identifier_buffer, identifier_buffer);
+                        "%s.data[%s_iter]);\n", identifier_buffer, identifier_buffer);
 
             output_buffers->packer_buffer_tail += sprintf(
                 output_buffers->packer_buffer + output_buffers->packer_buffer_tail, "offset++;\n}\n\n");
@@ -2197,7 +2193,7 @@ void emit_c_source(Parser_Object_Kind kind, Parser_State state_stack[MAX_STATE_S
             // TODO(rhett): store function names somewhere, switch depending on endianess
             output_buffers->unpacker_buffer_tail +=
                 sprintf(output_buffers->unpacker_buffer + output_buffers->unpacker_buffer_tail,
-                        "%s_length = endian_read_%s_%s(data + offset);\noffset += sizeof(%s);\n",
+                        "%s.size = endian_read_%s_%s(data + offset);\noffset += sizeof(%s);\n",
                         identifier_buffer, token_names[state_stack[state_stack_tail].length_type],
                         token_names[state_stack[state_stack_tail].endian],
                         token_names[state_stack[state_stack_tail].length_type]);
@@ -2207,14 +2203,14 @@ void emit_c_source(Parser_Object_Kind kind, Parser_State state_stack[MAX_STATE_S
                 state_stack_tail, depth);
             output_buffers->unpacker_buffer_tail +=
                 sprintf(output_buffers->unpacker_buffer + output_buffers->unpacker_buffer_tail,
-                        "%s = arena_push_size(arena, ", identifier_buffer);
+                        "%s.data = arena_push_size(arena, ", identifier_buffer);
 
             output_buffers->unpacker_buffer_tail += write_field_parents(
                 output_buffers->unpacker_buffer, output_buffers->unpacker_buffer_tail, state_stack,
                 state_stack_tail, depth);
             output_buffers->unpacker_buffer_tail +=
                 sprintf(output_buffers->unpacker_buffer + output_buffers->unpacker_buffer_tail,
-                        "%s_length);\n", identifier_buffer);
+                        "%s.size);\n", identifier_buffer);
 
             // output_buffers->unpacker_buffer_tail +=
             // write_field_parents(output_buffers->unpacker_buffer,
@@ -2228,7 +2224,7 @@ void emit_c_source(Parser_Object_Kind kind, Parser_State state_stack[MAX_STATE_S
                 state_stack_tail, depth);
             output_buffers->unpacker_buffer_tail +=
                 sprintf(output_buffers->unpacker_buffer + output_buffers->unpacker_buffer_tail,
-                        "%s_length);\n", identifier_buffer);
+                        "%s.size);\n", identifier_buffer);
 
             output_buffers->unpacker_buffer_tail +=
                 sprintf(output_buffers->unpacker_buffer + output_buffers->unpacker_buffer_tail,
@@ -2242,14 +2238,15 @@ void emit_c_source(Parser_Object_Kind kind, Parser_State state_stack[MAX_STATE_S
 
             output_buffers->unpacker_buffer_tail +=
                 sprintf(output_buffers->unpacker_buffer + output_buffers->unpacker_buffer_tail,
-                        "%s_length; %s_iter++)\n{\n", identifier_buffer, identifier_buffer);
+                        "%s.size; %s_iter++)\n{\n", identifier_buffer, identifier_buffer);
 
             output_buffers->unpacker_buffer_tail += write_field_parents(
                 output_buffers->unpacker_buffer, output_buffers->unpacker_buffer_tail, state_stack,
                 state_stack_tail, depth);
-            output_buffers->unpacker_buffer_tail += sprintf(
-                output_buffers->unpacker_buffer + output_buffers->unpacker_buffer_tail,
-                "%s[%s_iter] = *(i8*)((uptr)data + offset);\n", identifier_buffer, identifier_buffer);
+            output_buffers->unpacker_buffer_tail +=
+                sprintf(output_buffers->unpacker_buffer + output_buffers->unpacker_buffer_tail,
+                        "%s.data[%s_iter] = *(u8*)((uptr)data + offset);\n", identifier_buffer,
+                        identifier_buffer);
 
             output_buffers->unpacker_buffer_tail += sprintf(
                 output_buffers->unpacker_buffer + output_buffers->unpacker_buffer_tail, "offset++;\n");

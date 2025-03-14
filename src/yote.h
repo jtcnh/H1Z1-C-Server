@@ -131,8 +131,17 @@ STATIC_ASSERT(SIZE_OF(isize) == 4 || SIZE_OF(isize) == 8);
 typedef struct Buffer Buffer;
 struct Buffer {
     uptr size;
-    u8* data;
+    char* data;
 };
+
+typedef Buffer String8; // fuckin' strings man, how do they work??? idk what else to say lol
+String8 string8_make(const u8* memory, uptr size) {
+    String8 result = { 0 };
+    result.size = size;
+    result.data = (u8*)memory;
+    return result;
+}
+#define STR8(s) string8_make((u8*)(s), sizeof(s) - 1)
 
 typedef struct Stream Stream;
 struct Stream {

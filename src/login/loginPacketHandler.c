@@ -65,33 +65,21 @@ void LoginPacketHandler(AppState* app, SessionState* session, u8* data, u32 data
                     .id = 1,
                     .state = 2,
                     .is_locked = FALSE,
-                    .name = "H1Z1-C-Server",
-                    .name_length = STRLEN("H1Z1-C-Server"),
+                    .name = STR8("H1Z1-C-Server"),
                     .name_id = 193,
                     .description =
-                        "A server-emulator for H1Z1: King of the Kill, Preseason 3; Built in C",
-                    .description_length =
-                        STRLEN("A server-emulator for H1Z1: King of the Kill, Preseason 3; Built in C"),
+                        STR8("A server-emulator for H1Z1: King of the Kill, Preseason 3; Built in C"),
                     .description_id = 1362,
-                    .server_info =
+                    .server_info = STR8(
                         "<ServerInfo Region=\"CharacterCreate.RegionUs\" Subregion=\"UI.SubregionUS\" "
                         "IsRecommended=\"1\" IsRecommendedVS=\"0\" IsRecommendedNC=\"0\" "
-                        "IsRecommendedTR=\"0\" />",
-                    .server_info_length =
-                        STRLEN("<ServerInfo Region=\"CharacterCreate.RegionUs\" "
-                               "Subregion=\"UI.SubregionUS\" IsRecommended=\"1\" IsRecommendedVS=\"0\" "
-                               "IsRecommendedNC=\"0\" IsRecommendedTR=\"0\" />"),
+                        "IsRecommendedTR=\"0\" />"),
                     .population_data =
-                        "<Population PctCap=\"0\" PingAdr=\"127.0.0.1:60000\" Rulesets=\"\" "
-                        "Mode=\"13\" "
-                        "IsLogin=\"1\" IsWL=\"0\" IsEvt=\"0\" PL=\"0\" DC=\"LVS\" PopLock=\"0\" "
-                        "GP=\"100\" BP=\"175\" MaxPop=\"4000\" Subregion=\"US\"><Fac "
-                        "IsList=\"1\"/></Population>",
-                    .population_data_length =
-                        STRLEN("<Population PctCap=\"0\" PingAdr=\"127.0.0.1:60000\" Rulesets=\"\" "
-                               "Mode=\"13\" IsLogin=\"1\" IsWL=\"0\" IsEvt=\"0\" PL=\"0\" DC=\"LVS\" "
-                               "PopLock=\"0\" GP=\"100\" BP=\"175\" MaxPop=\"4000\" "
-                               "Subregion=\"US\"><Fac IsList=\"1\"/></Population>"),
+                        STR8("<Population PctCap=\"0\" PingAdr=\"127.0.0.1:60000\" Rulesets=\"\" "
+                             "Mode=\"13\" "
+                             "IsLogin=\"1\" IsWL=\"0\" IsEvt=\"0\" PL=\"0\" DC=\"LVS\" PopLock=\"0\" "
+                             "GP=\"100\" BP=\"175\" MaxPop=\"4000\" Subregion=\"US\"><Fac "
+                             "IsList=\"1\"/></Population>"),
                     .is_access_allowed = TRUE,
                 },
             };
@@ -148,18 +136,15 @@ void LoginPacketHandler(AppState* app, SessionState* session, u8* data, u32 data
 
             packetReply.login_payload = (struct login_payload_s[1]){
                 {
-                    .server_address = "127.0.0.1:60000",
-                    .server_address_length = STRLEN("127.0.0.1:60000"),
-                    .server_ticket = "7y3Bh44sKWZCYZH",
-                    .server_ticket_length = STRLEN("7y3Bh44sKWZCYZH"),
+                    .server_address = STR8("127.0.0.1:60000"),
+                    .server_ticket = STR8("7y3Bh44sKWZCYZH"),
                     .encryption_key =
                         "\x17\xbd\x08\x6b\x1b\x94\xf0\x2f\xf0\xec\x53\xd7\x63\x58\x9b\x5f",
                     .encryption_key_length =
                         STRLEN("\x17\xbd\x08\x6b\x1b\x94\xf0\x2f\xf0\xec\x53\xd7\x63\x58\x9b\x5f"),
                     .soe_protocol_version = 3,
                     .character_id = packet.character_id,
-                    .character_name = session->characterName.name,
-                    .character_name_length = session->characterName.nameLen,
+                    .character_name = session->characterName,
                 },
             };
 

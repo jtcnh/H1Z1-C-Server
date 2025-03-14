@@ -38,16 +38,16 @@ void NameValidation(AppState* app, SessionState* session, u8* data, u32 dataLen)
     u32 validationStatus = 1;
 
     session->selected_server_id = packet.server_id;
-    session->characterName.nameLen = packet.data_client->character_name_length;
-    session->characterName.name = packet.data_client->character_name;
+    session->characterName.size = packet.data_client->character_name.size;
+    session->characterName.data = packet.data_client->character_name.data;
 
-    u32 nameLen = session->characterName.nameLen;
+    u32 nameLen = session->characterName.size;
 
     if (nameLen < 3 || nameLen > 20) {
         validationStatus = 3;
     } else {
         for (u32 i = 0; i < nameLen; i++) {
-            char c = session->characterName.name[i];
+            char c = session->characterName.data[i];
             if (!(c >= '0' && c <= '9') && !(c >= 'a' && c <= 'z') && !(c >= 'A' && c <= 'Z')) {
                 validationStatus = 3;
                 break;
@@ -58,14 +58,13 @@ void NameValidation(AppState* app, SessionState* session, u8* data, u32 dataLen)
     Login_Packet_TunnelAppPacketServerToClient packetReply = { 0 };
 
     packetReply.server_id = session->selected_server_id;
-    packetReply.data_server_length = 14 + session->characterName.nameLen;
+    packetReply.data_server_length = 14 + session->characterName.size;
 
     packetReply.data_server = (struct data_server_s[1]){
         {
             .tunnel_op_code = 0xa7,
             .sub_op_code = 0x02,
-            .character_name = session->characterName.name,
-            .character_name_length = session->characterName.nameLen,
+            .character_name = session->characterName,
             .status = validationStatus,
         },
     };
@@ -166,8 +165,7 @@ void CharacterSelectInfo(AppState* app, SessionState* session) {
             .actorModelId = session->pGetPlayerActor.actorModelId,
             .gender = session->pGetPlayerActor.gender,
             .headId = session->pGetPlayerActor.headType,
-            .name = session->characterName.name,
-            .name_length = session->characterName.nameLen,
+            .name = session->characterName,
         },
     };
 
