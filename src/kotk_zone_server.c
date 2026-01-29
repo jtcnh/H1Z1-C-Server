@@ -9,14 +9,17 @@
 #include <string.h>
 #include <time.h>
 
+// Yote Headers
 #define YOTE_USE_ARENA 1
 #define YOTE_USE_STRING 1
 #define YOTE_PLATFORM_USE_SOCKETS 1
 
+// User-Defined Headers
 #include "yote.h"
 #include "yote_platform.h"
 #include "game_server.h"
 
+// Server Parameters
 #define MAX_THREADS 2 // Keep at 2 threads for testing, change to 4 threads when multiplayer works
 #define LOCAL_PORT 60000
 #define MAX_FRAGMENTS 12000
@@ -37,6 +40,7 @@
 #include "soe/coreProtocol.h"
 #include "soe/session.h"
 
+// Structs
 typedef struct StreamFunctionTable {
     inputStreamCallbackAck* gameInputAck;
     inputStreamCallbackData* gameInputData;

@@ -62,6 +62,7 @@ struct AppState {
 
 InputStreamCallbackData(pingInputStreamData);
 
+// Declare MESSAGE_NAMESPACE for logging
 #undef MESSAGE_NAMESPACE
 #define MESSAGE_NAMESPACE "Core"
 #include "soe/coreProtocol.c"
@@ -81,6 +82,8 @@ InputStreamCallbackData(pingInputStreamData);
 
 #define MESSAGE_NAMESPACE MESSAGE_NAMESPACE_DEFAULT // Default
 
+
+// Define Stream Methods for App
 InputStreamCallbackAck(inputCallbackAck) {
     SessionState* sessionState = session;
     sessionState->nextAck = ack;
@@ -115,9 +118,14 @@ OutputStreamCallbackData(outputCallBackData) {
                        sessionState->address.port, &sessionState->args, CoreKindDataFragment, &packet);
     }
 }
+// End of stream methods
 
+
+// Win32 app tick for wrapper
 __declspec(dllexport) AppTick(serverTick) {
     AppState* app = appMemory->app;
+
+    // Startup Server
     if (!app) {
         app = appMemory->app =
             arena_bootstrap_push_struct(appMemory->backingMemory.data, appMemory->backingMemory.size,
@@ -133,6 +141,7 @@ __declspec(dllexport) AppTick(serverTick) {
             .data = arena_push_size(&app->arenaTotal, perTickBackingMemory.size),
         };
 
+        // populate streamFunctionTable with data stream callbacks
         app->streamFunctionTable = arena_push_struct(&app->arenaTotal, StreamFunctionTable);
         app->streamFunctionTable->gameInputAck = inputCallbackAck;
         app->streamFunctionTable->gameInputData = inputCallbackData;
@@ -162,14 +171,16 @@ __declspec(dllexport) AppTick(serverTick) {
         printf(MESSAGE_CONCAT_INFO("Game server socket bound to port " STRINGIFY(LOCAL_PORT) "\n\n"));
     }
 
+    // Prepare packet buffer 
     u8 incomingBuffer[MAX_PACKET_LENGTH] = { 0 };
-
     u32 fromIp;
     u16 fromPort;
 
+    // Listen on socket for packets
     i32 receiveResult =
         app->api->receive_from(app->socket, incomingBuffer, MAX_PACKET_LENGTH, &fromIp, &fromPort);
 
+    // Upon rx packet from a client
     if (receiveResult) {
         printf(
             "\n\nPacket Tick Begin ============================================================\\\\\n");
@@ -182,6 +193,7 @@ __declspec(dllexport) AppTick(serverTick) {
         i32 firstFreeSession = -1;
         i32 knownSession = -1;
 
+        // find session
         for (i32 i = 0; i < app->sessionCapacity; i++) {
             if (firstFreeSession == -1 && !app->sessions[i].address.full) {
                 firstFreeSession = i;
@@ -196,33 +208,46 @@ __declspec(dllexport) AppTick(serverTick) {
             }
         }
 
+
+        // handle packet 
+        // if the client wants to start a session with the server
         if (CorePacketGetKind(incomingBuffer, receiveResult) == CoreKindSessionRequest) {
+
+            // client already has an existing session with the server
             if (knownSession != -1) {
                 printf(MESSAGE_CONCAT_INFO("Known client %u.%u.%u.%u:%u re-sent SessionRequest\n"),
                        (fromIp & 0xff000000) >> 24, (fromIp & 0x00ff0000) >> 16,
                        (fromIp & 0x0000ff00) >> 8, (fromIp & 0x000000ff), fromPort);
+
+            // client does not have an existing session with the server
             } else {
                 printf(MESSAGE_CONCAT_INFO(
                            "Unknown client %u.%u.%u.%u:%u sent SessionRequest. Beginning session\n"),
                        (fromIp & 0xff000000) >> 24, (fromIp & 0x00ff0000) >> 16,
                        (fromIp & 0x0000ff00) >> 8, (fromIp & 0x000000ff), fromPort);
 
+                // Server is full, no sessions available
                 if (firstFreeSession == -1) {
                     printf(MESSAGE_CONCAT_WARN("No free sessions avaliable\n"));
+
+                // establish a new session with an unkown client
                 } else {
                     knownSession = firstFreeSession;
 
+                    // write session address and ack sync
                     app->sessions[firstFreeSession].address.full = incomingAddress.full;
                     app->sessions[firstFreeSession].nextAck = -1;
                     app->sessions[firstFreeSession].previousAck = -1;
 
                     memcpy(&app->sessions[firstFreeSession].args, &app->args, sizeof(app->args));
 
+                    // establish network pools for new session
                     app->sessions[firstFreeSession].inputPool =
                         FragmentCreate(MAX_FRAGMENTS, MAX_PACKET_LENGTH, &app->arenaTotal);
                     app->sessions[firstFreeSession].outputPool = FragmentCreate(
                         MAX_FRAGMENTS, MAX_PACKET_LENGTH - DATA_HEADER_LENGTH, &app->arenaTotal);
 
+                    // establish network streams 
                     app->sessions[firstFreeSession].inputStream =
                         InputStreamInit(&app->sessions[firstFreeSession].inputPool, app->rc4Decoded,
                                         app->rc4DecodedLen, FALSE);
@@ -230,6 +255,8 @@ __declspec(dllexport) AppTick(serverTick) {
                         OutputStreamInit(&app->sessions[firstFreeSession].outputPool, app->rc4Decoded,
                                          app->rc4DecodedLen, FALSE);
 
+                    // route callbacks for network stream events
+                    // the app's core
                     app->sessions[firstFreeSession].inputStream.ackCallbackPtr =
                         &app->streamFunctionTable->gameInputAck;
                     app->sessions[firstFreeSession].inputStream.dataCallbackPtr =
@@ -240,18 +267,23 @@ __declspec(dllexport) AppTick(serverTick) {
             }
         }
 
+        // if the session remains established 
         if (knownSession != -1) {
             CorePacketHandle(app, &app->sessions[knownSession], app->api, incomingBuffer, receiveResult,
                              FALSE);
 
-            if (app->sessions[knownSession].previousAck != app->sessions[knownSession].nextAck) {
+            // Sync ack
+            i32 prevAck = app->sessions[knownSession].previousAck;
+            i32 nextAck = app->sessions[knownSession].nextAck;
+            if (prevAck != nextAck) {
                 printf(MESSAGE_CONCAT_INFO("Syncing ack...\n"));
-                app->sessions[knownSession].previousAck = app->sessions[knownSession].nextAck;
+                app->sessions[knownSession].previousAck = nextAck;
 
                 Ack ack = {
-                    .sequence = (u16)app->sessions[knownSession].nextAck,
+                    .sequence = (u16)nextAck,
                 };
 
+                // send ack to client 
                 CorePacketSend(app->socket, app->api, app->sessions[knownSession].address.ip,
                                app->sessions[knownSession].address.port,
                                &app->sessions[knownSession].args, CoreKindAck, &ack);
