@@ -1,3 +1,5 @@
+// SOE Login Server
+
 // C headers
 #include <stdio.h>
 #include <stdlib.h>

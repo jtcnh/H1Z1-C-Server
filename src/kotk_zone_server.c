@@ -1,3 +1,5 @@
+// SOE Zone Server
+
 // C headers
 #include <stdio.h>
 #include <stdlib.h>
@@ -188,9 +190,17 @@ __declspec(dllexport) AppTick(serverTick) {
     u32 fromIp;
     u16 fromPort;
 
-    i32 receiveResult =
-        app->api->receive_from(app->socket, incomingBuffer, MAX_PACKET_LENGTH, &fromIp, &fromPort);
+    // listen on socket to rx from client
+    i32 receiveResult = app->api->receive_from(
+        app->socket, 
+        incomingBuffer, 
+        MAX_PACKET_LENGTH, 
+        &fromIp, 
+        &fromPort
+    );
 
+    
+    // when recieving packets
     if (receiveResult) {
         printf(
             "\n\nPacket Tick Begin ============================================================\\\\\n");

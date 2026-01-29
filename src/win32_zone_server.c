@@ -1,3 +1,6 @@
+// Win32 Zone Server
+// wrapper to run kotk_zone_server App
+
 #include <stdio.h>
 #include <stdbool.h>
 

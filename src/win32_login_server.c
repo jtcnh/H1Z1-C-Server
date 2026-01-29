@@ -1,3 +1,6 @@
+// Win32 Login Server
+// wrapper to run kotk_login_server App
+
 #include <stdio.h>
 #include <stdbool.h>
 
