@@ -1,5 +1,8 @@
 # An `H1Z1: King of the Kill` server made in the C programming language!
 
+## Documentation
+If you would like to contribute and are wondering where to start, check out the [Documentation](./docs/)
+
 ## Current Status
 - [x] Compile for use, send and receive packets
 - [x] Handle Client connection request (you'll still be on the loading screen but the `BaseApi` is setup & connected)
